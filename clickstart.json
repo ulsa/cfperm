@@ -1,0 +1,23 @@
+{
+    "id": "clojure-clickstart",
+    "name": "Clojure/Compojure ClickStart",
+    "source": "git://github.com/CloudBees-community/clojure-clickstart.git",
+    "description" : "A Clojure/Compojure app with lein and continuous deployment",
+    "doc-url" : "https://github.com/CloudBees-community/clojure-clickstart/blob/master/README.md",
+    "app-package" : "https://s3.amazonaws.com/cloudbees-downloads/clickstart/clojure-clickstart.war",	
+    "icon" : "https://d3ko533tu1ozfq.cloudfront.net/clickstart/clojure_icon.png",
+
+    "supported-by" : "community", 
+    "order" : 2,
+
+    "runtime": {
+        "type": "tomcat"                
+    },
+    "build-with-jenkins": {
+	"template": {
+            "type": "https://raw.github.com/CloudBees-community/clojure-clickstart/master/config.xml",
+            "options": {
+            }            
+        }
+    }
+}
