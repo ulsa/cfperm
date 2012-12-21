@@ -40,6 +40,7 @@
                "AWS::SNS::Topic"
                {:Action ["sns:CreateTopic"
                          "sns:DeleteTopic"
+                         "sns:ListTopics"
                          "sns:SetTopicAttributes";maybe
                          ]
                 :Resource :*}})
