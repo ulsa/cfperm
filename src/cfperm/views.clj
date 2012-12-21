@@ -1,9 +1,8 @@
 (ns cfperm.handler
-  (:use compojure.core
-        [hiccup core page form])
-  (:require [compojure.handler :as handler]
-            [compojure.route :as route])
-  (:require [cheshire.core :refer :all]))
+  (:require [cheshire.core :refer :all]
+            [hiccup.core :refer :all]
+            [hiccup.page :refer :all]
+            [hiccup.form :refer :all]))
 
 (def policies {"AWS::ElasticLoadBalancing::LoadBalancer"
                {:Action ["elasticloadbalancing:CreateLoadBalancer"
@@ -32,7 +31,9 @@
                          "ec2:TerminateInstances"]
                 :Resource :*}
                "AWS::IAM::User"
-               {}
+               {:Action ["iam:CreateUser"
+                         "iam:DeleteUser"]
+                :Resource :*}
                "AWS::S3::BucketPolicy"
                {:Action ["s3:PutBucketPolicy"
                          "s3:DeleteBucketPolicy"]
@@ -41,7 +42,8 @@
                {:Action ["sns:CreateTopic"
                          "sns:DeleteTopic"
                          "sns:ListTopics"
-                         "sns:SetTopicAttributes";maybe
+                         "sns:ListSubscriptionsByTopic"
+                         "sns:Subscribe"
                          ]
                 :Resource :*}})
 
@@ -51,7 +53,7 @@
   (html5
    [:head
     [:title "CloudFormation Permission Generator"]
-    (include-css "/css/style.css")]
+    (include-css "/css/boostrap.min.css")]
    [:body
     [:h1 "Submit Your CloudFormation Template"]
     [:p "Paste in your CloudFormation template here, and you will get back the JSON
@@ -67,6 +69,9 @@
 (defn remove-iam [resources]
   (filter #(not (.startsWith % "AWS::IAM::")) resources))
 
+(defn add-iam-user [resources]
+  (conj resources "AWS::IAM::User"))
+
 (defn create-policies [json]
   (->> (-> json
            (parse-string true)          ;enable keywords
@@ -74,20 +79,14 @@
        (map (comp :Type val))           ;get all :Types
        distinct
        remove-iam                       ;no need for AWS::IAM stuff
+       ;add-iam-user                     ;except possibly create/delete user
        (map policies)
        (map #(merge % {:Effect :Allow}))
        (assoc {} :Statement)))
 
-(defroutes app-routes
-  (GET "/" [] (show-index))
-  (POST "/" [cftemplate]
-        (html5
-         [:head
-          [:title "IaM Policies for Your Template"]]
-         [:body
-          [:pre (generate-string (create-policies cftemplate) {:pretty true})]]))
-  (route/resources "/")
-  (route/not-found "Not Found"))
-
-(def app
-  (handler/site app-routes))
+(defn generate-policies [templ]
+  (html5
+   [:head
+    [:title "IaM Policies for Your Template"]]
+   [:body
+    [:pre (generate-string (create-policies templ) {:pretty true})]]))

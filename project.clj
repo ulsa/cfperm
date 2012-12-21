@@ -8,6 +8,6 @@
                  [cheshire "5.0.1"]]
   :plugins [[lein-ring "0.7.5"]
             [lein-cloudbees "1.0.3"]]
-  :ring {:handler cfperm.handler/app}
+  :ring {:handler cfperm.routes/app}
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.3"]]}})
