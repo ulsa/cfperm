@@ -44,9 +44,6 @@
                          ]
                 :Resource :*}})
 
-(def json-file "/Users/ulrik/Downloads/php-simple.template")
-(def json (slurp json-file))
-
 (defn show-index
   "Display a description and a form for submitting a CF template here"
   []
