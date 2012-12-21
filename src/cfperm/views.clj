@@ -1,4 +1,4 @@
-(ns cfperm.handler
+(ns cfperm.views
   (:require [cheshire.core :refer :all]
             [hiccup.core :refer :all]
             [hiccup.page :refer :all]
