@@ -5,7 +5,8 @@
             [cfperm.views :refer :all]))
 
 (defroutes app-routes
-  (GET "/" [] (show-index))
+  (GET "/" [] (index-page))
+  (GET "/about" [] (about-page))
   (POST "/" [cftemplate] (generate-policies cftemplate))
   (route/resources "/")
   (route/not-found "Not Found"))

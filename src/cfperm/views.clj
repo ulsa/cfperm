@@ -47,24 +47,57 @@
                          ]
                 :Resource :*}})
 
-(defn show-index
-  "Display a description and a form for submitting a CF template here"
-  []
+(defn header []
+  [:div.navbar.navbar-inverse.navbar-fixed-top
+   [:div.navbar-inner
+    [:div.container
+     [:a.brand {:href "/"} "CloudFormation Permission Generator"]
+     [:div.nav-collapse.collapse
+      [:ul.nav
+       [:li.active [:a {:href "/"} "Home"]]
+       [:li.active [:a {:href "/about"} "About"]]]]]]])
+
+(defn template [& body]
   (html5
    [:head
     [:title "CloudFormation Permission Generator"]
-    (include-css "/css/boostrap.min.css")]
-   [:body
-    [:h1 "Submit Your CloudFormation Template"]
-    [:p "Paste in your CloudFormation template here, and you will get back the JSON
- containing the IaM policies that your user running CloudFormation requires in order
- to actually perform the tasks specified in the template."]
-    (form-to [:post "/"]
-             (label "cftemplate" "CloudFormation Template:")
+    [:meta {:name "viewport"
+            :content "width=device-width, initial-scale=1.0"}]
+    (include-css "/css/bootstrap.min.css")]
+   [:body {:style "padding-top:60px;"}
+    (header)
+    [:div.container
+     body]]))
+
+(defn index-page
+  "Display a description and a form for submitting a CF template here"
+  []
+  (template
+   [:div {:class "hero-unit"}
+    [:h1 "CloudFormation Template"]
+    [:p "Given a CloudFormation template, you will get back the JSON
+ containing the IaM policies that your user running CloudFormation requires
+ in order to actually perform the tasks specified in the template."]
+    (form-to {:class "well"}
+             [:post "/"]
+             (label "cftemplate" "Paste CloudFormation Template here:")
              [:br]
-             (text-area {:cols 100 :rows 20} "cftemplate")
+             (text-area {:class "span10" :rows 20} "cftemplate")
              [:br]
              (submit-button "Submit"))]))
+
+(defn about-page []
+  (template
+   [:div {:class "well"}
+    [:h1 "About This:"]
+    [:p "This Clojure project was developed by developers from "
+     [:a {:href "http://www.jayway.com/"} "Jayway"]
+     "."]
+     [:h1 "About CloudFormation:"]
+      "Read about what CloudFormation is "
+     [:a {:href "https://aws.amazon.com/cloudformation"} "at Amazon Web Services"]
+
+     ]))
 
 (defn remove-iam [resources]
   (filter #(not (.startsWith % "AWS::IAM::")) resources))
@@ -85,8 +118,6 @@
        (assoc {} :Statement)))
 
 (defn generate-policies [templ]
-  (html5
-   [:head
-    [:title "IaM Policies for Your Template"]]
-   [:body
+  (template
+   [:div {:class "hero-unit"}
     [:pre (generate-string (create-policies templ) {:pretty true})]]))
