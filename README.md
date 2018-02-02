@@ -7,7 +7,7 @@ needs permissions to create it and also to delete it, in case of a
 rollback. If you have a large template with many resources, it will
 require plenty of permissions. Rather than forcing you to give too
 much permission to your user, this web service will parse your
-template and present you with the necessary policies epxressed as JSON
+template and present you with the necessary policies expressed as JSON
 code that you can paste into the permissions field for your IaM user.
 
 
